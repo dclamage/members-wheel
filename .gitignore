@@ -34,3 +34,5 @@ server/data/*.log
 # Coverage
 coverage/
 
+# Package locks
+package-lock.json
