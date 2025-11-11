@@ -18,6 +18,7 @@ server/.env
 client/.env
 server/.env.local
 client/.env.local
+!server/.env.example
 
 # SQLite database files
 server/data/*.sqlite
