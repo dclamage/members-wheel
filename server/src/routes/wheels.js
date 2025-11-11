@@ -17,6 +17,7 @@ const mapWheelRows = (wheelRows, entryRows) => {
         name: entry.person_name,
       },
       createdAt: entry.created_at,
+      disabled: Boolean(entry.disabled),
     });
     return acc;
   }, new Map());
@@ -193,6 +194,7 @@ router.post('/:id/entries', adminOnly, async (req, res, next) => {
         name: entry.person_name,
       },
       createdAt: entry.created_at,
+      disabled: Boolean(entry.disabled),
     }));
 
     return res.status(201).json(response);
@@ -225,6 +227,11 @@ router.patch('/:wheelId/entries/:entryId', adminOnly, async (req, res, next) => 
       params.push(personId);
     }
 
+    if (typeof req.body.disabled === 'boolean') {
+      updates.push('disabled = ?');
+      params.push(req.body.disabled ? 1 : 0);
+    }
+
     if (!updates.length) {
       return res.status(400).json({ message: 'No valid updates provided' });
     }
@@ -248,6 +255,7 @@ router.patch('/:wheelId/entries/:entryId', adminOnly, async (req, res, next) => 
         name: updated.person_name,
       },
       createdAt: updated.created_at,
+      disabled: Boolean(updated.disabled),
     });
   } catch (error) {
     return next(error);

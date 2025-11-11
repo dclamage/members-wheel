@@ -13,6 +13,11 @@ const WheelPage = () => {
     wheelSlug,
   ]);
 
+  const activeEntries = useMemo(
+    () => (wheel?.entries || []).filter((entry) => !entry.disabled),
+    [wheel],
+  );
+
   if (loading) {
     return <div className="wheel-page__state">Loading wheel…</div>;
   }
@@ -38,12 +43,12 @@ const WheelPage = () => {
         <div>
           <h2>{wheel.name}</h2>
           <p>
-            {wheel.entries.length} entr{wheel.entries.length === 1 ? 'y' : 'ies'} available to spin. Share this
+            {activeEntries.length} entr{activeEntries.length === 1 ? 'y' : 'ies'} available to spin. Share this
             page so anyone can celebrate the team in real time.
           </p>
         </div>
         <div className="wheel-page__meta">
-          <span>Total entries: {wheel.entries.length}</span>
+          <span>Total entries: {activeEntries.length}</span>
         </div>
       </header>
       <div className="wheel-page__content">

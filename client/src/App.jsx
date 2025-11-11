@@ -5,7 +5,11 @@ import { AppContext } from './contexts/AppContext.js';
 import HomePage from './pages/HomePage.jsx';
 import WheelPage from './pages/WheelPage.jsx';
 import AdminPage from './pages/AdminPage.jsx';
+import AdminLanding from './pages/admin/AdminLanding.jsx';
+import AdminCreateWheel from './pages/admin/AdminCreateWheel.jsx';
+import AdminEditWheel from './pages/admin/AdminEditWheel.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
+import { assignSlugsToList, withSlug } from './utils/slug.js';
 import './App.css';
 
 const SESSION_STORAGE_KEY = 'members-wheel-admin-session';
@@ -13,34 +17,15 @@ const ADMIN_SESSION_REFRESH_BUFFER_MS = 1000 * 60 * 60 * 24; // 1 day
 const MIN_REFRESH_INTERVAL_MS = 1000 * 60 * 5; // 5 minutes
 const MIN_SESSION_HEADROOM_MS = 1000 * 60 * 5; // 5 minutes
 
-const slugify = (name) =>
-  (name || '')
-    .toString()
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)+/g, '');
+const normalizeEntry = (entry) => ({
+  ...entry,
+  disabled: Boolean(entry?.disabled),
+});
 
-const withSlug = (wheel, existing = []) => {
-  const usedSlugs = new Set(existing.map((item) => item.slug));
-  const baseSlug = slugify(wheel.name) || `wheel-${wheel.id}`;
-  let slug = baseSlug;
-  if (usedSlugs.has(slug)) {
-    slug = `${baseSlug}-${wheel.id}`;
-  }
-  return {
-    ...wheel,
-    slug,
-  };
-};
-
-const assignSlugsToList = (items) => {
-  const prepared = [];
-  items.forEach((item) => {
-    prepared.push(withSlug(item, prepared));
-  });
-  return prepared;
-};
+const normalizeWheel = (wheel) => ({
+  ...wheel,
+  entries: Array.isArray(wheel?.entries) ? wheel.entries.map(normalizeEntry) : [],
+});
 
 const buildNavClassName = ({ isActive }) =>
   `app__nav-link${isActive ? ' app__nav-link--active' : ''}`;
@@ -57,7 +42,8 @@ const App = () => {
     setLoadError('');
     try {
       const { data } = await api.get('/wheels');
-      setWheels(assignSlugsToList(data));
+      const normalized = data.map(normalizeWheel);
+      setWheels(assignSlugsToList(normalized));
     } catch (error) {
       setLoadError('Failed to load wheels. Please try again.');
       // eslint-disable-next-line no-console
@@ -195,7 +181,7 @@ const App = () => {
 
   const handleWheelCreated = useCallback((wheel) => {
     setWheels((prev) => {
-      const nextWheel = withSlug(wheel, prev);
+      const nextWheel = withSlug(normalizeWheel(wheel), prev);
       return [...prev, nextWheel];
     });
   }, []);
@@ -206,7 +192,7 @@ const App = () => {
         wheel.id === wheelId
           ? {
               ...wheel,
-              entries: [...wheel.entries, ...newEntries],
+              entries: [...wheel.entries, ...newEntries.map(normalizeEntry)],
             }
           : wheel,
       ),
@@ -229,9 +215,25 @@ const App = () => {
   const handleWheelUpdated = useCallback((updatedWheel) => {
     setWheels((prev) => {
       const others = prev.filter((wheel) => wheel.id !== updatedWheel.id);
-      const nextWheel = withSlug(updatedWheel, others);
+      const nextWheel = withSlug(normalizeWheel(updatedWheel), others);
       return prev.map((wheel) => (wheel.id === updatedWheel.id ? nextWheel : wheel));
     });
+  }, []);
+
+  const handleEntryUpdated = useCallback((wheelId, updatedEntry) => {
+    const normalizedEntry = normalizeEntry(updatedEntry);
+    setWheels((prev) =>
+      prev.map((wheel) =>
+        wheel.id === wheelId
+          ? {
+              ...wheel,
+              entries: wheel.entries.map((entry) =>
+                entry.id === normalizedEntry.id ? { ...entry, ...normalizedEntry } : entry,
+              ),
+            }
+          : wheel,
+      ),
+    );
   }, []);
 
   const contextValue = useMemo(
@@ -247,6 +249,7 @@ const App = () => {
       handleWheelCreated,
       handleEntriesAdded,
       handleWheelUpdated,
+      handleEntryUpdated,
       handleEntryDeleted,
     }),
     [
@@ -261,6 +264,7 @@ const App = () => {
       handleWheelCreated,
       handleEntriesAdded,
       handleWheelUpdated,
+      handleEntryUpdated,
       handleEntryDeleted,
     ],
   );
@@ -289,7 +293,11 @@ const App = () => {
           <main className="app__main">
             <Routes>
               <Route path="/" element={<HomePage />} />
-              <Route path="/admin" element={<AdminPage />} />
+              <Route path="/admin" element={<AdminPage />}>
+                <Route index element={<AdminLanding />} />
+                <Route path="create" element={<AdminCreateWheel />} />
+                <Route path="edit/:wheelSlug" element={<AdminEditWheel />} />
+              </Route>
               <Route path="/:wheelSlug" element={<WheelPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>

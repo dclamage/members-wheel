@@ -1,0 +1,254 @@
+.admin-landing,
+.admin-create,
+.admin-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.admin-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 1.75rem;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.admin-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.admin-card__header h2,
+.admin-card__header h3 {
+  margin: 0;
+}
+
+.admin-card__hint {
+  margin: 0;
+  color: #475569;
+}
+
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.admin-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.admin-form__field label {
+  font-weight: 600;
+}
+
+.admin-form__field input,
+.admin-form__field select {
+  font: inherit;
+  padding: 0.7rem 0.85rem;
+  border-radius: 12px;
+  border: 1px solid #cbd5f5;
+}
+
+.admin-form__actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.admin-button {
+  background: #1d4ed8;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 0.7rem 1.4rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.admin-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.admin-button:not(:disabled):hover {
+  background: #1e40af;
+}
+
+.admin-button--ghost {
+  background: rgba(29, 78, 216, 0.1);
+  color: #1d4ed8;
+}
+
+.admin-button--ghost:not(:disabled):hover {
+  background: rgba(30, 64, 175, 0.16);
+}
+
+.admin-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #1d4ed8;
+  cursor: pointer;
+  font: inherit;
+  text-decoration: none;
+}
+
+.admin-link:hover {
+  text-decoration: underline;
+}
+
+.admin-link--danger {
+  color: #dc2626;
+}
+
+.admin-empty-state {
+  margin: 0;
+  color: #475569;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.admin-feedback {
+  margin: 0;
+  font-weight: 600;
+  color: #16a34a;
+}
+
+.admin-feedback--error {
+  color: #dc2626;
+}
+
+.admin-feedback--success {
+  color: #16a34a;
+}
+
+.admin-person-mode {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  color: #1e293b;
+}
+
+.admin-person-mode input {
+  margin-right: 0.35rem;
+}
+
+.admin-wheel-editor__groups {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.admin-wheel-editor__group {
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.admin-wheel-editor__group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.admin-wheel-editor__group-header h4 {
+  margin: 0;
+}
+
+.admin-wheel-editor__entries {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.admin-wheel-editor__entry {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+}
+
+.admin-wheel-editor__entry--disabled {
+  opacity: 0.6;
+}
+
+.admin-wheel-editor__entry-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.admin-wheel-editor__entry-label {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.admin-wheel-editor__entry-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.admin-entry-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.admin-entry-form input {
+  font: inherit;
+  padding: 0.7rem 0.85rem;
+  border-radius: 12px;
+  border: 1px solid #cbd5f5;
+}
+
+.admin-entry-form__actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.admin-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(29, 78, 216, 0.12);
+  color: #1d4ed8;
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.admin-badge--muted {
+  background: rgba(148, 163, 184, 0.2);
+  color: #475569;
+}
+
+.admin-link:disabled,
+.admin-button:disabled {
+  pointer-events: none;
+}

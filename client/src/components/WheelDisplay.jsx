@@ -40,16 +40,21 @@ const WheelDisplay = ({ wheel, adminSessionId, onEntryDeleted }) => {
     setError('');
   }, [adminSessionId]);
 
-  const groupedEntries = useMemo(() => groupEntriesByPerson(wheel?.entries || []), [wheel]);
+  const activeEntries = useMemo(
+    () => (wheel?.entries || []).filter((entry) => !entry.disabled),
+    [wheel],
+  );
+
+  const groupedEntries = useMemo(() => groupEntriesByPerson(activeEntries), [activeEntries]);
 
   const handleSpin = () => {
-    if (!wheel || !wheel.entries.length || spinning) {
+    if (!wheel || !activeEntries.length || spinning) {
       return;
     }
 
-    const randomIndex = Math.floor(Math.random() * wheel.entries.length);
-    const selectedEntry = wheel.entries[randomIndex];
-    const entryAngle = 360 / wheel.entries.length;
+    const randomIndex = Math.floor(Math.random() * activeEntries.length);
+    const selectedEntry = activeEntries[randomIndex];
+    const entryAngle = 360 / activeEntries.length;
     const offset = 360 - (randomIndex * entryAngle + entryAngle / 2);
     const extraSpins = Math.floor(Math.random() * 3) + 4; // Randomize spins for variety
     const duration = (wheel.spinDurationSeconds || 5) * 1000;
@@ -99,7 +104,7 @@ const WheelDisplay = ({ wheel, adminSessionId, onEntryDeleted }) => {
     <div className="wheel-display">
       <div className="wheel-display__visual">
         <WheelVisualizer
-          entries={wheel.entries}
+          entries={activeEntries}
           rotation={rotation}
           spinDuration={wheel.spinDurationSeconds || 5}
           spinning={spinning}
@@ -108,7 +113,7 @@ const WheelDisplay = ({ wheel, adminSessionId, onEntryDeleted }) => {
           type="button"
           className="wheel-display__spin-button"
           onClick={handleSpin}
-          disabled={!wheel.entries.length || spinning}
+          disabled={!activeEntries.length || spinning}
         >
           {spinning ? 'Spinning…' : 'Spin the Wheel'}
         </button>
@@ -128,7 +133,7 @@ const WheelDisplay = ({ wheel, adminSessionId, onEntryDeleted }) => {
       </div>
       <div className="wheel-display__entries">
         <h3>Entries</h3>
-        {wheel.entries.length === 0 ? (
+        {activeEntries.length === 0 ? (
           <p className="wheel-display__empty">No entries yet. Add some using the admin tools.</p>
         ) : (
           <div className="wheel-display__entries-list">
