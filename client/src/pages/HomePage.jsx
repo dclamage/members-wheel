@@ -23,14 +23,19 @@ const HomePage = () => {
         <div className="home-page__state">No wheels yet. Create one from the admin area.</div>
       ) : (
         <ul className="home-page__list">
-          {wheels.map((wheel) => (
-            <li key={wheel.id} className="home-page__item">
-              <Link to={`/${wheel.slug}`} className="home-page__card">
-                <h3>{wheel.name}</h3>
-                <p>{wheel.entries.length} entr{wheel.entries.length === 1 ? 'y' : 'ies'}</p>
-              </Link>
-            </li>
-          ))}
+          {wheels.map((wheel) => {
+            const activeCount = wheel.entries.filter((entry) => !entry.disabled).length;
+            return (
+              <li key={wheel.id} className="home-page__item">
+                <Link to={`/${wheel.slug}`} className="home-page__card">
+                  <h3>{wheel.name}</h3>
+                  <p>
+                    {activeCount} entr{activeCount === 1 ? 'y' : 'ies'}
+                  </p>
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       )}
     </section>

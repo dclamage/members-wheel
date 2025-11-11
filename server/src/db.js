@@ -72,11 +72,18 @@ export const initialize = async () => {
       wheel_id INTEGER NOT NULL,
       label TEXT NOT NULL,
       person_id INTEGER NOT NULL,
+      disabled INTEGER NOT NULL DEFAULT 0,
       created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (wheel_id) REFERENCES wheels(id) ON DELETE CASCADE,
       FOREIGN KEY (person_id) REFERENCES people(id) ON DELETE CASCADE
     )
   `);
+
+  const entryColumns = await all('PRAGMA table_info(entries)');
+  const hasDisabledColumn = entryColumns.some((column) => column.name === 'disabled');
+  if (!hasDisabledColumn) {
+    await run('ALTER TABLE entries ADD COLUMN disabled INTEGER NOT NULL DEFAULT 0');
+  }
 
   await run(`
     CREATE TABLE IF NOT EXISTS admin_sessions (

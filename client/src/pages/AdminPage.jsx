@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import AdminPanel from '../components/AdminPanel.jsx';
+import { Outlet, useOutletContext } from 'react-router-dom';
 import { useAppContext } from '../contexts/AppContext.js';
 import api from '../api.js';
 import './AdminPage.css';
@@ -14,6 +14,9 @@ const AdminPage = () => {
     handleWheelCreated,
     handleEntriesAdded,
     handleWheelUpdated,
+    handleEntryUpdated,
+    handleEntryDeleted,
+    refreshWheels,
   } = useAppContext();
 
   const [token, setToken] = useState('');
@@ -111,13 +114,18 @@ const AdminPage = () => {
               {loggingOut ? 'Signing out…' : 'Sign out'}
             </button>
           </div>
-          <AdminPanel
-            adminSessionId={adminSession.sessionId}
-            wheels={wheels}
-            onWheelCreated={handleWheelCreated}
-            onEntriesAdded={handleEntriesAdded}
-            onWheelUpdated={handleWheelUpdated}
-            onSessionExpired={handleSessionExpired}
+          <Outlet
+            context={{
+              adminSessionId: adminSession.sessionId,
+              wheels,
+              onWheelCreated: handleWheelCreated,
+              onEntriesAdded: handleEntriesAdded,
+              onWheelUpdated: handleWheelUpdated,
+              onEntryUpdated: handleEntryUpdated,
+              onEntryDeleted: handleEntryDeleted,
+              onSessionExpired: handleSessionExpired,
+              refreshWheels,
+            }}
           />
           {status && <p className="admin-page__status">{status}</p>}
           {error && <p className="admin-page__error">{error}</p>}
@@ -128,3 +136,5 @@ const AdminPage = () => {
 };
 
 export default AdminPage;
+
+export const useAdminPanelContext = () => useOutletContext();
