@@ -1,54 +1,83 @@
 .app {
+  min-height: 100vh;
+  background: radial-gradient(circle at top, rgba(59, 130, 246, 0.1), transparent 55%),
+    #f5f7fa;
+}
+
+.app__shell {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 3rem;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  padding: 1.5rem;
-  gap: 1.5rem;
+  gap: 2rem;
 }
 
 .app__header {
-  text-align: center;
-  background: #1d4ed8;
+  background: linear-gradient(135deg, #1d4ed8, #4338ca);
   color: #fff;
-  padding: 2rem 1.5rem;
-  border-radius: 16px;
-  box-shadow: 0 20px 35px rgba(37, 99, 235, 0.15);
-}
-
-.app__subtitle {
-  margin: 0.5rem 0 0;
-  font-size: 1.05rem;
-  max-width: 720px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.app__main {
-  display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+  padding: 2.25rem 2rem;
+  border-radius: 24px;
+  box-shadow: 0 30px 50px rgba(37, 99, 235, 0.22);
+  display: flex;
+  flex-direction: column;
   gap: 1.5rem;
 }
 
-.app__content,
-.app__sidebar {
-  background: #fff;
-  border-radius: 16px;
-  padding: 1.5rem;
-  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+.app__branding {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.app__state {
-  text-align: center;
-  padding: 2rem 0;
-  color: #475569;
+.app__title {
+  margin: 0;
+  font-size: clamp(2rem, 2.4vw + 1.5rem, 2.8rem);
 }
 
-.app__state--error {
-  color: #dc2626;
+.app__subtitle {
+  margin: 0;
+  font-size: 1.05rem;
+  max-width: 720px;
+  color: rgba(255, 255, 255, 0.85);
 }
 
-@media (max-width: 960px) {
-  .app__main {
-    grid-template-columns: 1fr;
+.app__nav {
+  display: inline-flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.app__nav-link {
+  padding: 0.55rem 1.25rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.app__nav-link:hover {
+  background: rgba(255, 255, 255, 0.28);
+  transform: translateY(-1px);
+}
+
+.app__nav-link--active {
+  background: #facc15;
+  color: #1f2937;
+}
+
+.app__main {
+  min-height: 50vh;
+}
+
+@media (max-width: 720px) {
+  .app__header {
+    padding: 2rem 1.5rem;
+  }
+
+  .app__nav {
+    gap: 0.75rem;
   }
 }

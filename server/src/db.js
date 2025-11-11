@@ -77,6 +77,15 @@ export const initialize = async () => {
       FOREIGN KEY (person_id) REFERENCES people(id) ON DELETE CASCADE
     )
   `);
+
+  await run(`
+    CREATE TABLE IF NOT EXISTS admin_sessions (
+      id TEXT PRIMARY KEY,
+      created_at DATETIME NOT NULL,
+      last_used_at DATETIME NOT NULL,
+      expires_at DATETIME NOT NULL
+    )
+  `);
 };
 
 export default db;

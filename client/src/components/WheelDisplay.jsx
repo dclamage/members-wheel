@@ -20,7 +20,7 @@ const groupEntriesByPerson = (entries) => {
   }));
 };
 
-const WheelDisplay = ({ wheel, adminToken, onEntryDeleted }) => {
+const WheelDisplay = ({ wheel, adminSessionId, onEntryDeleted }) => {
   const [rotation, setRotation] = useState(0);
   const [spinning, setSpinning] = useState(false);
   const [result, setResult] = useState(null);
@@ -38,7 +38,7 @@ const WheelDisplay = ({ wheel, adminToken, onEntryDeleted }) => {
 
   useEffect(() => {
     setError('');
-  }, [adminToken]);
+  }, [adminSessionId]);
 
   const groupedEntries = useMemo(() => groupEntriesByPerson(wheel?.entries || []), [wheel]);
 
@@ -68,15 +68,15 @@ const WheelDisplay = ({ wheel, adminToken, onEntryDeleted }) => {
   };
 
   const handleDeleteEntry = async (entryId) => {
-    if (!adminToken) {
-      setError('Provide the admin token in the panel to manage entries.');
+    if (!adminSessionId) {
+      setError('Sign in as an admin to manage entries.');
       return;
     }
 
     try {
       await api.delete(`/wheels/${wheel.id}/entries/${entryId}`, {
         headers: {
-          'x-admin-token': adminToken,
+          'x-admin-session': adminSessionId,
         },
       });
       if (result?.id === entryId) {
@@ -85,7 +85,7 @@ const WheelDisplay = ({ wheel, adminToken, onEntryDeleted }) => {
       onEntryDeleted(wheel.id, entryId);
       setError('');
     } catch (err) {
-      setError('Failed to delete entry. Check your token and try again.');
+      setError('Failed to delete entry. Check your admin session and try again.');
       // eslint-disable-next-line no-console
       console.error(err);
     }
@@ -145,7 +145,7 @@ const WheelDisplay = ({ wheel, adminToken, onEntryDeleted }) => {
                   {group.entries.map((entry) => (
                     <li key={entry.id}>
                       <span>{entry.label}</span>
-                      {adminToken && (
+                      {adminSessionId && (
                         <button
                           type="button"
                           className="wheel-display__entry-delete"
@@ -183,13 +183,13 @@ WheelDisplay.propTypes = {
       }),
     ),
   }),
-  adminToken: PropTypes.string,
+  adminSessionId: PropTypes.string,
   onEntryDeleted: PropTypes.func.isRequired,
 };
 
 WheelDisplay.defaultProps = {
   wheel: null,
-  adminToken: '',
+  adminSessionId: '',
 };
 
 export default WheelDisplay;

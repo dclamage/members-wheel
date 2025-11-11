@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import wheelsRouter from './routes/wheels.js';
+import adminRouter from './routes/admin.js';
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.get('/api/health', (req, res) => {
 });
 
 app.use('/api/wheels', wheelsRouter);
+app.use('/api/admin', adminRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Not Found' });
