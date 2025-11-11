@@ -25,6 +25,7 @@ server/data/*.sqlite
 server/data/*.db
 server/data/*.sqlite3
 server/data/*.log
+server/data/members-wheel.sqlite-journal
 
 # Misc
 .DS_Store
