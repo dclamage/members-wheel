@@ -4,11 +4,11 @@ import api from '../api.js';
 import './AdminPanel.css';
 
 const AdminPanel = ({
-  adminToken,
-  onTokenChange,
+  adminSessionId,
   onWheelCreated,
   onEntriesAdded,
   onWheelUpdated,
+  onSessionExpired,
   wheels,
 }) => {
   const [wheelName, setWheelName] = useState('');
@@ -33,9 +33,9 @@ const AdminPanel = ({
     }
   }, [wheels]);
 
-  const requireToken = () => {
-    if (!adminToken) {
-      setError('Admin token required. Save it in the field above.');
+  const requireSession = () => {
+    if (!adminSessionId) {
+      setError('You must be signed in to manage wheels.');
       return false;
     }
     setError('');
@@ -44,7 +44,7 @@ const AdminPanel = ({
 
   const handleCreateWheel = async (event) => {
     event.preventDefault();
-    if (!requireToken()) {
+    if (!requireSession()) {
       return;
     }
     if (!wheelName.trim()) {
@@ -56,7 +56,7 @@ const AdminPanel = ({
         '/wheels',
         { name: wheelName.trim(), spinDurationSeconds: Number(wheelDuration) || 5 },
         {
-          headers: { 'x-admin-token': adminToken },
+          headers: { 'x-admin-session': adminSessionId },
         },
       );
       onWheelCreated(data);
@@ -65,8 +65,12 @@ const AdminPanel = ({
       setStatus(`Created wheel "${data.name}"`);
       setError('');
     } catch (err) {
-      setError('Failed to create wheel. Check your token and inputs.');
       setStatus('');
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        onSessionExpired();
+        return;
+      }
+      setError('Failed to create wheel. Check your inputs and try again.');
       // eslint-disable-next-line no-console
       console.error(err);
     }
@@ -74,7 +78,7 @@ const AdminPanel = ({
 
   const handleAddEntry = async (event) => {
     event.preventDefault();
-    if (!requireToken()) {
+    if (!requireSession()) {
       return;
     }
     if (!selectedWheelForEntry) {
@@ -94,7 +98,7 @@ const AdminPanel = ({
           count: Number(entryCount) || 1,
         },
         {
-          headers: { 'x-admin-token': adminToken },
+          headers: { 'x-admin-session': adminSessionId },
         },
       );
       onEntriesAdded(selectedWheelForEntry, data);
@@ -104,8 +108,12 @@ const AdminPanel = ({
       setStatus(`Added ${data.length} entr${data.length === 1 ? 'y' : 'ies'} to the wheel.`);
       setError('');
     } catch (err) {
-      setError('Failed to add entry. Check your token and inputs.');
       setStatus('');
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        onSessionExpired();
+        return;
+      }
+      setError('Failed to add entry. Check your inputs and try again.');
       // eslint-disable-next-line no-console
       console.error(err);
     }
@@ -113,7 +121,7 @@ const AdminPanel = ({
 
   const handleUpdateWheel = async (event) => {
     event.preventDefault();
-    if (!requireToken()) {
+    if (!requireSession()) {
       return;
     }
     if (!selectedWheelForUpdate) {
@@ -133,7 +141,7 @@ const AdminPanel = ({
         payload.spinDurationSeconds = Number(updatedWheelDuration) || 5;
       }
       const { data } = await api.patch(`/wheels/${selectedWheelForUpdate}`, payload, {
-        headers: { 'x-admin-token': adminToken },
+        headers: { 'x-admin-session': adminSessionId },
       });
       onWheelUpdated(data);
       setUpdatedWheelName('');
@@ -141,8 +149,12 @@ const AdminPanel = ({
       setStatus(`Updated wheel "${data.name}"`);
       setError('');
     } catch (err) {
-      setError('Failed to update wheel. Check your token and inputs.');
       setStatus('');
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        onSessionExpired();
+        return;
+      }
+      setError('Failed to update wheel. Check your inputs and try again.');
       // eslint-disable-next-line no-console
       console.error(err);
     }
@@ -151,19 +163,7 @@ const AdminPanel = ({
   return (
     <div className="admin-panel">
       <h2>Owner Controls</h2>
-      <p className="admin-panel__hint">
-        All changes require your private admin token. Keep it secret and do not share.
-      </p>
-      <label className="admin-panel__token-label" htmlFor="admin-token">
-        Admin token
-      </label>
-      <input
-        id="admin-token"
-        type="password"
-        value={adminToken}
-        onChange={(event) => onTokenChange(event.target.value)}
-        placeholder="Enter admin token"
-      />
+      <p className="admin-panel__hint">You&apos;re signed in. All updates use your active admin session.</p>
 
       <form className="admin-panel__section" onSubmit={handleCreateWheel}>
         <h3>Create a wheel</h3>
@@ -186,7 +186,9 @@ const AdminPanel = ({
             onChange={(event) => setWheelDuration(event.target.value)}
           />
         </div>
-        <button type="submit">Create wheel</button>
+        <button type="submit" disabled={!wheelName.trim()}>
+          Create wheel
+        </button>
       </form>
 
       <form className="admin-panel__section" onSubmit={handleAddEntry}>
@@ -286,11 +288,11 @@ const AdminPanel = ({
 };
 
 AdminPanel.propTypes = {
-  adminToken: PropTypes.string,
-  onTokenChange: PropTypes.func.isRequired,
+  adminSessionId: PropTypes.string,
   onWheelCreated: PropTypes.func.isRequired,
   onEntriesAdded: PropTypes.func.isRequired,
   onWheelUpdated: PropTypes.func.isRequired,
+  onSessionExpired: PropTypes.func.isRequired,
   wheels: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
@@ -300,7 +302,7 @@ AdminPanel.propTypes = {
 };
 
 AdminPanel.defaultProps = {
-  adminToken: '',
+  adminSessionId: '',
 };
 
 export default AdminPanel;

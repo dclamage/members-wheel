@@ -1,0 +1,66 @@
+.home-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.home-page__intro h2 {
+  margin: 0;
+  font-size: 1.75rem;
+}
+
+.home-page__intro p {
+  margin: 0.5rem 0 0;
+  color: #475569;
+  max-width: 640px;
+}
+
+.home-page__state {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 16px;
+  text-align: center;
+  color: #475569;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+.home-page__state--error {
+  color: #dc2626;
+}
+
+.home-page__list {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.home-page__card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 16px;
+  text-decoration: none;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.home-page__card h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.home-page__card p {
+  margin: 0;
+  color: #6366f1;
+  font-weight: 600;
+}
+
+.home-page__card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 35px rgba(79, 70, 229, 0.18);
+}

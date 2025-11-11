@@ -1,0 +1,31 @@
+.not-found {
+  background: #fff;
+  border-radius: 18px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+.not-found h2 {
+  margin: 0 0 0.75rem;
+}
+
+.not-found p {
+  margin: 0;
+  color: #475569;
+}
+
+.not-found__link {
+  display: inline-flex;
+  margin-top: 1.5rem;
+  background: #1d4ed8;
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.not-found__link:hover {
+  background: #1e40af;
+}
